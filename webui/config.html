@@ -1,0 +1,71 @@
+<div x-data>
+    <template x-if="config">
+        <div>
+            <div class="section-title">APU — Automatic Polling Utility</div>
+            <div class="section-description">
+                Controls automated cooldown delays between tool executions to reduce API rate exhaustion and token waste.
+                0 = no sleep (full speed). Max 600 seconds (10 minutes).
+            </div>
+
+            <div class="field">
+                <div class="field-label">
+                    <div class="field-title">Enable APU</div>
+                    <div class="field-description">When disabled, no delays are applied and the agent runs at full speed.</div>
+                </div>
+                <div class="field-control">
+                    <label class="toggle">
+                        <input type="checkbox" x-model="config.apu_enabled" />
+                        <span class="toggler"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="section-title">Delay Settings</div>
+
+            <div class="field">
+                <div class="field-label">
+                    <div class="field-title">Base Wait (seconds)</div>
+                    <div class="field-description">Delay applied after every tool execution. 0 = no sleep.</div>
+                </div>
+                <div class="field-control" style="display:flex;align-items:center;gap:8px;">
+                    <input type="range" min="0" max="600" step="1"
+                           x-model.number="config.base_wait_seconds"
+                           style="flex:1;" />
+                    <input type="number" min="0" max="600" step="1"
+                           x-model.number="config.base_wait_seconds"
+                           style="width:64px;" />
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">
+                    <div class="field-title">High-Compute Multiplier</div>
+                    <div class="field-description">Applied when tool matches high-resource patterns (api, fetch, download, scrape, etc.) or ran > 5s. Multiplies the base wait.</div>
+                </div>
+                <div class="field-control" style="display:flex;align-items:center;gap:8px;">
+                    <input type="range" min="1.0" max="2.0" step="0.05"
+                           x-model.number="config.high_compute_multiplier"
+                           style="flex:1;" />
+                    <input type="number" min="1.0" max="2.0" step="0.05"
+                           x-model.number="config.high_compute_multiplier"
+                           style="width:64px;" />
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">
+                    <div class="field-title">Minimum Cooldown (seconds)</div>
+                    <div class="field-description">Floor value — delay is never shorter than this, regardless of other settings. 0 = no floor.</div>
+                </div>
+                <div class="field-control" style="display:flex;align-items:center;gap:8px;">
+                    <input type="range" min="0" max="600" step="1"
+                           x-model.number="config.min_api_cooldown"
+                           style="flex:1;" />
+                    <input type="number" min="0" max="600" step="1"
+                           x-model.number="config.min_api_cooldown"
+                           style="width:64px;" />
+                </div>
+            </div>
+        </div>
+    </template>
+</div>

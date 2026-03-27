@@ -1,0 +1,61 @@
+<style>
+    .apu-wake-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 8px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--color-fg, #e0e0e0);
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background 0.15s, color 0.15s;
+        white-space: nowrap;
+    }
+    .apu-wake-btn:hover {
+        background: var(--color-bg-3, rgba(255,255,255,0.08));
+        color: var(--color-primary, #7eb8f7);
+    }
+    .apu-wake-btn:disabled { opacity: 0.6; cursor: default; }
+    .apu-wake-btn.apu-waking { color: var(--color-warning, #f0c040); }
+    .apu-wake-btn.apu-awake  { color: var(--color-success, #5cb85c); }
+    .apu-wake-btn svg { flex-shrink: 0; width: 14px; height: 14px; }
+    .apu-wake-btn p { margin: 0; }
+</style>
+
+<div x-data="{
+    status: 'idle',
+    async wake() {
+        if (this.status !== 'idle') return;
+        this.status = 'waking';
+        try {
+            await fetchApi('/plugins/apu_governor/apu_wake', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({})
+            });
+            this.status = 'awake';
+        } catch(e) {
+            this.status = 'idle';
+            return;
+        }
+        setTimeout(() => { this.status = 'idle'; }, 2000);
+    },
+    get label() {
+        if (this.status === 'waking') return 'Waking...';
+        if (this.status === 'awake')  return 'Awake!';
+        return 'Wake APU';
+    }
+}">
+    <button class="text-button apu-wake-btn"
+            :class="{ 'apu-waking': status === 'waking', 'apu-awake': status === 'awake' }"
+            @click="wake()"
+            :disabled="status !== 'idle'"
+            title="Wake the APU governor — interrupt current cooldown immediately">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M13 2L4.09 12.97A1 1 0 0 0 5 14.5h5.5L11 22l8.91-10.97A1 1 0 0 0 19 9.5H13.5L13 2z"/>
+        </svg>
+        <p x-text="label"></p>
+    </button>
+</div>

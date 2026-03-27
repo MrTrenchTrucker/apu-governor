@@ -1,0 +1,4 @@
+apu_enabled: true
+base_wait_seconds: 300
+high_compute_multiplier: 1.75
+min_api_cooldown: 60

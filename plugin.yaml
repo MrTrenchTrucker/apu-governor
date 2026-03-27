@@ -1,0 +1,7 @@
+name: apu_governor
+title: A.P.U Automatic Polling Utility
+description: "Automatic Polling Utility - dynamic cooldown delays between tool executions to prevent API rate exhaustion and reduce token waste."
+version: "2.0.0"
+author: "MrTrench / CONTAK"
+always_enabled: false
+per_agent_config: true
