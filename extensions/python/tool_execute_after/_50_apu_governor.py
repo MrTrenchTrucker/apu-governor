@@ -16,9 +16,13 @@ def _get_state():
 
 
 async def _interruptible_sleep(seconds, agent_id, state):
-    """Sleep for `seconds`, but exit early if wake button is pressed."""
-    deadline = time.time() + seconds
-    while time.time() < deadline:
+    """Sleep for `seconds`, but exit early if wake button is pressed.
+
+    Uses time.perf_counter() (monotonic) so NTP clock adjustments cannot
+    cause the sleep to run too long or exit too early.
+    """
+    deadline = time.perf_counter() + seconds
+    while time.perf_counter() < deadline:
         await asyncio.sleep(1)
         # Check global wake flag (set by apu_wake API)
         if state.wake_requested:
